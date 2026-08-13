@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>용호골목시장 메뉴판</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .logo img {
+      width: 180px;
+      max-height: 100px;
+      object-fit: contain;
+    }
+
+    .store-name {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .languages {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+    }
+
+    .language {
+      flex: 1;
+      padding: 12px 5px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .language.active {
+      background: #222;
+      color: white;
+    }
+
+    .menu {
+      background: white;
+      padding: 18px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-name {
+      font-size: 18px;
+    }
+
+    .price {
+      font-size: 17px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- 용호골목시장 로고 -->
+  <div class="logo">
+    <img
+      src="https://drive.google.com/thumbnail?id=19UyiJBFLRN9CRTfvB4_itl_Rgh_Zx3L-&sz=w500"
+      alt="용호골목시장 로고"
+    >
+  </div>
+
+  <!-- 점포명 -->
+  <div id="storeName" class="store-name">
+    메뉴판
+  </div>
+
+  <!-- 언어 선택 -->
+  <div class="languages">
+
+    <button
+      class="language active"
+      onclick="changeLanguage('KR', this)"
+    >
+      한국어
+    </button>
+
+    <button
+      class="language"
+      onclick="changeLanguage('EN', this)"
+    >
+      English
+    </button>
+
+    <button
+      class="language"
+      onclick="changeLanguage('JP', this)"
+    >
+      日本語
+    </button>
+
+    <button
+      class="language"
+      onclick="changeLanguage('CN', this)"
+    >
+      中文
+    </button>
+
+  </div>
+
+  <!-- 메뉴 -->
+  <div id="menuList"></div>
+
+</div>
+
+
+<script>
+
+// Apps Script 주소
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwtb2Bag4i1PRkq7NBiqmv-JXBOSv_6TiHqz8Wr-s4xhfo3IPPrSXIznl6BhK_VCD35/exec";
+
+
+let menuData = [];
+
+let currentLanguage = "KR";
+
+
+// URL에서 storeId 가져오기
+const params =
+  new URLSearchParams(window.location.search);
+
+const storeId =
+  params.get("storeId") || "";
+
+
+// Apps Script에서 메뉴 데이터 가져오기
+const script =
+  document.createElement("script");
+
+script.src =
+  APPS_SCRIPT_URL +
+  "?action=getMenu" +
+  "&storeId=" +
+  encodeURIComponent(storeId) +
+  "&callback=loadMenu";
+
+document.body.appendChild(script);
+
+
+// 메뉴 데이터 받기
+function loadMenu(data) {
+
+  menuData = data;
+
+  if (menuData.length > 0) {
+
+    document.getElementById("storeName").textContent =
+      menuData[0].storeName;
+
+  }
+
+  renderMenu();
+}
+
+
+// 메뉴 표시
+function renderMenu() {
+
+  const menuList =
+    document.getElementById("menuList");
+
+  menuList.innerHTML = "";
+
+
+  menuData.forEach(item => {
+
+    let menuName = "";
+
+
+    if (currentLanguage === "KR") {
+      menuName = item.menuKR;
+    }
+
+    if (currentLanguage === "EN") {
+      menuName = item.menuEN;
+    }
+
+    if (currentLanguage === "JP") {
+      menuName = item.menuJP;
+    }
+
+    if (currentLanguage === "CN") {
+      menuName = item.menuCN;
+    }
+
+
+    const menu =
+      document.createElement("div");
+
+    menu.className = "menu";
+
+
+    menu.innerHTML = `
+      <div class="menu-name">
+        ${menuName || ""}
+      </div>
+
+      <div class="price">
+        ${Number(item.price).toLocaleString()}원
+      </div>
+    `;
+
+
+    menuList.appendChild(menu);
+
+  });
+
+}
+
+
+// 언어 변경
+function changeLanguage(language, button) {
+
+  currentLanguage = language;
+
+
+  document
+    .querySelectorAll(".language")
+    .forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+
+  button.classList.add("active");
+
+
+  renderMenu();
+
+}
+
+</script>
+
+</body>
+</html>
