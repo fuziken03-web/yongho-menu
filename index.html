@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>용호골목시장 메뉴판</title>
 
   <style>
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -19,6 +22,9 @@
       padding: 30px 20px;
     }
 
+
+    /* 로고 */
+
     .logo {
       text-align: center;
       margin-bottom: 15px;
@@ -30,12 +36,18 @@
       object-fit: contain;
     }
 
+
+    /* 매장명 */
+
     .store-name {
       text-align: center;
       font-size: 30px;
       font-weight: bold;
       margin-bottom: 25px;
     }
+
+
+    /* 언어 선택 */
 
     .languages {
       display: flex;
@@ -50,6 +62,7 @@
       background: white;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .language.active {
@@ -57,45 +70,110 @@
       color: white;
     }
 
+
+    /* 메뉴 */
+
     .menu {
       background: white;
-      padding: 18px;
+      padding: 15px;
       margin-bottom: 10px;
       border-radius: 10px;
+
       display: flex;
-      justify-content: space-between;
       align-items: center;
+
+      gap: 12px;
+    }
+
+
+    /* 메뉴 사진 */
+
+    .menu-photo {
+      width: 90px;
+      height: 90px;
+
+      object-fit: cover;
+
+      border-radius: 8px;
+
+      flex-shrink: 0;
+
+      background: #eee;
+    }
+
+
+    /* 사진이 없는 경우 */
+
+    .menu-photo.empty {
+      display: none;
+    }
+
+
+    /* 메뉴 이름 */
+
+    .menu-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .menu-name {
       font-size: 18px;
+      word-break: keep-all;
     }
+
+
+    /* 가격 */
 
     .price {
       font-size: 17px;
       font-weight: bold;
+      white-space: nowrap;
     }
+
+
+    /* 메뉴가 없을 때 */
+
+    .empty-message {
+      text-align: center;
+      color: #777;
+      padding: 30px 0;
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-<!-- 용호골목시장 로고 -->
-<div class="logo">
-  <img
-    src="https://drive.google.com/thumbnail?id=1LKz6Oif7BQJSjhsfiSOym0jzzQKlbumn&sz=w500"
-    alt="용호골목시장 로고"
-  >
-</div>
 
-  <!-- 점포명 -->
-  <div id="storeName" class="store-name">
+  <!-- 용호골목시장 로고 -->
+
+  <div class="logo">
+
+    <img
+      src="https://drive.google.com/thumbnail?id=1LKz6Oif7BQJSjhsfiSOym0jzzQKlbumn&sz=w500"
+      alt="용호골목시장 로고"
+    >
+
+  </div>
+
+
+  <!-- 매장명 -->
+
+  <div
+    id="storeName"
+    class="store-name"
+  >
     메뉴판
   </div>
 
+
   <!-- 언어 선택 -->
+
   <div class="languages">
 
     <button
@@ -105,6 +183,7 @@
       한국어
     </button>
 
+
     <button
       class="language"
       onclick="changeLanguage('EN', this)"
@@ -112,12 +191,14 @@
       English
     </button>
 
+
     <button
       class="language"
       onclick="changeLanguage('JP', this)"
     >
       日本語
     </button>
+
 
     <button
       class="language"
@@ -128,75 +209,144 @@
 
   </div>
 
+
   <!-- 메뉴 -->
+
   <div id="menuList"></div>
+
 
 </div>
 
 
+
 <script>
 
-// Apps Script 주소
-const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwtb2Bag4i1PRkq7NBiqmv-JXBOSv_6TiHqz8Wr-s4xhfo3IPPrSXIznl6BhK_VCD35/exec";
 
+/* =========================================
+   기본 설정
+========================================= */
 
 let menuData = [];
 
 let currentLanguage = "KR";
 
 
-// URL에서 storeId 가져오기
-const params =
+/* =========================================
+   점포ID 가져오기
+========================================= */
+
+const urlParams =
   new URLSearchParams(window.location.search);
 
 const storeId =
-  params.get("storeId") || "";
+  urlParams.get("storeId") || "";
 
 
-// Apps Script에서 메뉴 데이터 가져오기
-const script =
-  document.createElement("script");
+/* =========================================
+   Apps Script 주소
+========================================= */
 
-script.src =
-  APPS_SCRIPT_URL +
-  "?action=getMenu" +
-  "&storeId=" +
-  encodeURIComponent(storeId) +
-  "&callback=loadMenu";
-
-document.body.appendChild(script);
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbwtb2Bag4i1PRkq7NBiqmv-JXBOSv_6TiHqz8Wr-s4xhfo3IPPrSXIznl6BhK_VCD35/exec";
 
 
-// 메뉴 데이터 받기
-function loadMenu(data) {
+/* =========================================
+   메뉴 데이터 가져오기
+========================================= */
 
-  menuData = data;
+const callbackName =
+  "menuCallback_" + Date.now();
+
+
+window[callbackName] = function(data) {
+
+  menuData = data || [];
+
+
+  /* 매장명 표시 */
 
   if (menuData.length > 0) {
 
     document.getElementById("storeName").textContent =
-      menuData[0].storeName;
+      menuData[0].storeName || "메뉴판";
 
   }
 
+
+  /* 메뉴 표시 */
+
   renderMenu();
-}
 
 
-// 메뉴 표시
+  /* 콜백 삭제 */
+
+  delete window[callbackName];
+
+};
+
+
+/* =========================================
+   JSONP 요청
+========================================= */
+
+const script =
+  document.createElement("script");
+
+
+script.src =
+  API_URL +
+  "?action=getMenu" +
+  "&storeId=" +
+  encodeURIComponent(storeId) +
+  "&callback=" +
+  callbackName;
+
+
+script.onerror = function() {
+
+  document.getElementById("menuList").innerHTML =
+    '<p class="empty-message">메뉴를 불러오지 못했습니다.</p>';
+
+};
+
+
+document.body.appendChild(script);
+
+
+/* =========================================
+   메뉴 표시
+========================================= */
+
 function renderMenu() {
 
   const menuList =
     document.getElementById("menuList");
 
+
   menuList.innerHTML = "";
 
 
+  /* 메뉴가 없는 경우 */
+
+  if (menuData.length === 0) {
+
+    menuList.innerHTML =
+      '<p class="empty-message">등록된 메뉴가 없습니다.</p>';
+
+    return;
+
+  }
+
+
+  /* 메뉴 반복 */
+
   menuData.forEach(item => {
+
 
     let menuName = "";
 
+
+    /* 언어별 메뉴명 */
 
     if (currentLanguage === "KR") {
       menuName = item.menuKR;
@@ -215,51 +365,97 @@ function renderMenu() {
     }
 
 
+    /* 메뉴 박스 */
+
     const menu =
       document.createElement("div");
+
 
     menu.className = "menu";
 
 
+    /* 사진 */
+
+    let photoHTML = "";
+
+
+    if (item.photo && String(item.photo).trim() !== "") {
+
+      photoHTML = `
+        <img
+          class="menu-photo"
+          src="${item.photo}"
+          alt="${menuName || "메뉴 이미지"}"
+          onerror="this.style.display='none';"
+        >
+      `;
+
+    }
+
+
+    /* 메뉴 HTML */
+
     menu.innerHTML = `
-      <div class="menu-name">
-        ${menuName || ""}
+
+      ${photoHTML}
+
+      <div class="menu-info">
+
+        <div class="menu-name">
+          ${menuName || ""}
+        </div>
+
       </div>
 
       <div class="price">
         ${Number(item.price).toLocaleString()}원
       </div>
+
     `;
 
 
     menuList.appendChild(menu);
+
 
   });
 
 }
 
 
-// 언어 변경
+/* =========================================
+   언어 변경
+========================================= */
+
 function changeLanguage(language, button) {
 
   currentLanguage = language;
 
 
+  /* 기존 active 제거 */
+
   document
     .querySelectorAll(".language")
     .forEach(btn => {
+
       btn.classList.remove("active");
+
     });
 
 
+  /* 선택된 버튼 active */
+
   button.classList.add("active");
 
+
+  /* 메뉴 다시 표시 */
 
   renderMenu();
 
 }
 
+
 </script>
+
 
 </body>
 </html>
