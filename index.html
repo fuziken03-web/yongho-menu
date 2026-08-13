@@ -5,10 +5,7 @@
 
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>용호골목시장 메뉴판</title>
 
@@ -16,191 +13,117 @@
   <style>
 
     body {
-
       margin: 0;
-
-      font-family:
-        Arial,
-        sans-serif;
-
+      font-family: Arial, sans-serif;
       background: #f7f7f7;
-
     }
 
 
     .container {
-
       max-width: 600px;
-
       margin: auto;
-
       padding: 30px 20px;
-
     }
 
 
-    /* =================================
-       로고
-    ================================= */
+    /* 로고 */
 
     .logo {
-
       text-align: center;
-
       margin-bottom: 15px;
-
     }
 
 
     .logo img {
-
       width: 180px;
-
       max-height: 100px;
-
       object-fit: contain;
-
     }
 
 
-    /* =================================
-       대표사진
-    ================================= */
+    /* 대표사진 */
 
     .store-photo {
-
       width: 100%;
-
       max-height: 300px;
-
       object-fit: cover;
-
       border-radius: 12px;
-
       margin-bottom: 20px;
-
       display: none;
-
     }
 
 
-    /* =================================
-       매장명
-    ================================= */
+    /* 매장명 */
 
     .store-name {
-
       text-align: center;
-
       font-size: 30px;
-
       font-weight: bold;
-
       margin-bottom: 25px;
-
     }
 
 
-    /* =================================
-       언어
-    ================================= */
+    /* 언어 버튼 */
 
     .languages {
-
       display: flex;
-
       gap: 8px;
-
       margin-bottom: 25px;
-
     }
 
 
     .language {
-
       flex: 1;
-
       padding: 12px 5px;
-
       border: 1px solid #ddd;
-
       background: white;
-
       border-radius: 8px;
-
       cursor: pointer;
-
       font-size: 14px;
-
     }
 
 
     .language.active {
-
       background: #222;
-
       color: white;
-
     }
 
 
-    /* =================================
-       메뉴
-    ================================= */
+    /* 메뉴 */
 
     .menu {
-
       background: white;
-
       padding: 18px;
-
       margin-bottom: 10px;
-
       border-radius: 10px;
-
       display: flex;
-
       justify-content: space-between;
-
       align-items: center;
-
     }
 
 
     .menu-name {
-
       font-size: 18px;
-
       word-break: keep-all;
-
     }
 
 
     .price {
-
       font-size: 17px;
-
       font-weight: bold;
-
       white-space: nowrap;
-
     }
 
 
     .empty-message {
-
       text-align: center;
-
       color: #777;
-
       padding: 30px 0;
-
     }
 
   </style>
 
 </head>
-
 
 
 <body>
@@ -209,9 +132,7 @@
 <div class="container">
 
 
-  <!-- =================================
-       용호골목시장 로고
-  ================================= -->
+  <!-- 용호골목시장 로고 -->
 
   <div class="logo">
 
@@ -223,10 +144,7 @@
   </div>
 
 
-
-  <!-- =================================
-       대표사진
-  ================================= -->
+  <!-- 점포 대표사진 -->
 
   <img
     id="storePhoto"
@@ -235,10 +153,7 @@
   >
 
 
-
-  <!-- =================================
-       매장명
-  ================================= -->
+  <!-- 매장명 -->
 
   <div
     id="storeName"
@@ -248,13 +163,9 @@
   </div>
 
 
-
-  <!-- =================================
-       언어 버튼
-  ================================= -->
+  <!-- 언어 선택 -->
 
   <div class="languages">
-
 
     <button
       class="language active"
@@ -263,14 +174,12 @@
       한국어
     </button>
 
-
     <button
       class="language"
       onclick="changeLanguage('EN', this)"
     >
       English
     </button>
-
 
     <button
       class="language"
@@ -279,7 +188,6 @@
       日本語
     </button>
 
-
     <button
       class="language"
       onclick="changeLanguage('CN', this)"
@@ -287,14 +195,10 @@
       中文
     </button>
 
-
   </div>
 
 
-
-  <!-- =================================
-       메뉴
-  ================================= -->
+  <!-- 메뉴 -->
 
   <div id="menuList"></div>
 
@@ -345,117 +249,108 @@ const API_URL =
 ========================================== */
 
 const callbackName =
-  "menuCallback_" +
-  Date.now();
+  "menuCallback_" + Date.now();
 
 
 
-window[callbackName] =
-  function(data) {
+window[callbackName] = function(data) {
 
 
-    /* 대표사진 */
-
-    if (
-      data.photo &&
-      String(data.photo).trim() !== ""
-    ) {
-
-      const photo =
-        document.getElementById(
-          "storePhoto"
-        );
+  console.log("받은 데이터:", data);
 
 
-      photo.src =
-        data.photo;
+  /* -------------------------------
+     매장명
+  ------------------------------- */
+
+  document
+    .getElementById("storeName")
+    .textContent =
+      data.storeName || "메뉴판";
 
 
-      photo.style.display =
-        "block";
+  /* -------------------------------
+     대표사진
+  ------------------------------- */
+
+  const photo =
+    document.getElementById("storePhoto");
 
 
-      photo.onerror =
-        function() {
+  if (
+    data.photo &&
+    String(data.photo).trim() !== ""
+  ) {
 
-          this.style.display =
-            "none";
+    photo.src =
+      data.photo;
 
-        };
-
-    }
-
-
-
-    /* 매장명 */
-
-    document
-      .getElementById(
-        "storeName"
-      )
-      .textContent =
-        data.storeName ||
-        "메뉴판";
+    photo.style.display =
+      "block";
 
 
+    photo.onerror = function() {
 
-    /* 메뉴 */
+      this.style.display =
+        "none";
 
-    menuData =
-      data.menus || [];
+    };
+
+  } else {
+
+    photo.style.display =
+      "none";
+
+  }
 
 
-    renderMenu();
+  /* -------------------------------
+     메뉴
+  ------------------------------- */
+
+  menuData =
+    data.menus || [];
 
 
+  renderMenu();
 
-    /* callback 삭제 */
 
-    delete window[callbackName];
+  /* callback 제거 */
 
-  };
+  delete window[callbackName];
+
+};
 
 
 
 /* ==========================================
-   Apps Script 호출
+   Apps Script 데이터 요청
 ========================================== */
 
 const script =
-  document.createElement(
-    "script"
-  );
+  document.createElement("script");
 
 
 script.src =
   API_URL +
   "?action=getMenu" +
   "&storeId=" +
-  encodeURIComponent(
-    storeId
-  ) +
+  encodeURIComponent(storeId) +
   "&callback=" +
   callbackName;
 
 
+script.onerror = function() {
 
-script.onerror =
-  function() {
+  document
+    .getElementById("menuList")
+    .innerHTML =
+      '<p class="empty-message">메뉴를 불러오지 못했습니다.</p>';
 
-    document
-      .getElementById(
-        "menuList"
-      )
-      .innerHTML =
-        '<p class="empty-message">메뉴를 불러오지 못했습니다.</p>';
-
-  };
+};
 
 
-
-document.body.appendChild(
-  script
-);
+document.body.appendChild(script);
 
 
 
@@ -467,18 +362,13 @@ function renderMenu() {
 
 
   const menuList =
-    document.getElementById(
-      "menuList"
-    );
+    document.getElementById("menuList");
 
 
   menuList.innerHTML = "";
 
 
-
-  if (
-    menuData.length === 0
-  ) {
+  if (menuData.length === 0) {
 
     menuList.innerHTML =
       '<p class="empty-message">등록된 메뉴가 없습니다.</p>';
@@ -488,101 +378,91 @@ function renderMenu() {
   }
 
 
-
-  menuData.forEach(
-    function(item) {
+  menuData.forEach(function(item) {
 
 
-      let menuName = "";
+    let menuName = "";
 
 
+    /* 한국어 */
 
-      /* 한국어 */
+    if (
+      currentLanguage === "KR"
+    ) {
 
-      if (
-        currentLanguage === "KR"
-      ) {
-
-        menuName =
-          item.menuKR;
-
-      }
-
-
-      /* 영어 */
-
-      if (
-        currentLanguage === "EN"
-      ) {
-
-        menuName =
-          item.menuEN;
-
-      }
-
-
-      /* 일본어 */
-
-      if (
-        currentLanguage === "JP"
-      ) {
-
-        menuName =
-          item.menuJP;
-
-      }
-
-
-      /* 중국어 */
-
-      if (
-        currentLanguage === "CN"
-      ) {
-
-        menuName =
-          item.menuCN;
-
-      }
-
-
-
-      const menu =
-        document.createElement(
-          "div"
-        );
-
-
-      menu.className =
-        "menu";
-
-
-
-      menu.innerHTML = `
-
-        <div class="menu-name">
-
-          ${menuName || ""}
-
-        </div>
-
-
-        <div class="price">
-
-          ${Number(
-            item.price
-          ).toLocaleString()}원
-
-        </div>
-
-      `;
-
-
-      menuList.appendChild(
-        menu
-      );
+      menuName =
+        item.menuKR;
 
     }
-  );
+
+
+    /* 영어 */
+
+    if (
+      currentLanguage === "EN"
+    ) {
+
+      menuName =
+        item.menuEN;
+
+    }
+
+
+    /* 일본어 */
+
+    if (
+      currentLanguage === "JP"
+    ) {
+
+      menuName =
+        item.menuJP;
+
+    }
+
+
+    /* 중국어 */
+
+    if (
+      currentLanguage === "CN"
+    ) {
+
+      menuName =
+        item.menuCN;
+
+    }
+
+
+    const menu =
+      document.createElement("div");
+
+
+    menu.className =
+      "menu";
+
+
+    menu.innerHTML = `
+
+      <div class="menu-name">
+
+        ${menuName || ""}
+
+      </div>
+
+
+      <div class="price">
+
+        ${Number(
+          item.price
+        ).toLocaleString()}원
+
+      </div>
+
+    `;
+
+
+    menuList.appendChild(menu);
+
+  });
 
 }
 
@@ -602,27 +482,20 @@ function changeLanguage(
     language;
 
 
-
   document
-    .querySelectorAll(
-      ".language"
-    )
-    .forEach(
-      function(btn) {
+    .querySelectorAll(".language")
+    .forEach(function(btn) {
 
-        btn.classList.remove(
-          "active"
-        );
+      btn.classList.remove(
+        "active"
+      );
 
-      }
-    );
-
+    });
 
 
   button.classList.add(
     "active"
   );
-
 
 
   renderMenu();
