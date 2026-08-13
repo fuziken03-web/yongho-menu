@@ -26,7 +26,9 @@
     }
 
 
-    /* 로고 */
+    /* =========================
+       용호골목시장 로고
+    ========================= */
 
     .logo {
       text-align: center;
@@ -41,29 +43,35 @@
     }
 
 
-    /* 대표사진 */
-
-    .store-photo {
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      display: none;
-    }
-
-
-    /* 매장명 */
+    /* =========================
+       매장명
+    ========================= */
 
     .store-name {
       text-align: center;
       font-size: 30px;
       font-weight: bold;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
     }
 
 
-    /* 언어 버튼 */
+    /* =========================
+       대표사진
+    ========================= */
+
+    .store-photo {
+      width: 80%;
+      max-height: 250px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin: 0 auto 20px;
+      display: none;
+    }
+
+
+    /* =========================
+       언어 선택
+    ========================= */
 
     .languages {
       display: flex;
@@ -89,7 +97,9 @@
     }
 
 
-    /* 메뉴 */
+    /* =========================
+       메뉴
+    ========================= */
 
     .menu {
       background: white;
@@ -132,7 +142,9 @@
 <div class="container">
 
 
-  <!-- 용호골목시장 로고 -->
+  <!-- =========================
+       용호골목시장 로고
+  ========================= -->
 
   <div class="logo">
 
@@ -144,16 +156,9 @@
   </div>
 
 
-  <!-- 점포 대표사진 -->
-
-  <img
-    id="storePhoto"
-    class="store-photo"
-    alt="매장 대표사진"
-  >
-
-
-  <!-- 매장명 -->
+  <!-- =========================
+       매장명
+  ========================= -->
 
   <div
     id="storeName"
@@ -163,7 +168,20 @@
   </div>
 
 
-  <!-- 언어 선택 -->
+  <!-- =========================
+       대표사진
+  ========================= -->
+
+  <img
+    id="storePhoto"
+    class="store-photo"
+    alt="매장 대표사진"
+  >
+
+
+  <!-- =========================
+       언어 선택
+  ========================= -->
 
   <div class="languages">
 
@@ -198,7 +216,9 @@
   </div>
 
 
-  <!-- 메뉴 -->
+  <!-- =========================
+       메뉴
+  ========================= -->
 
   <div id="menuList"></div>
 
@@ -210,9 +230,9 @@
 <script>
 
 
-/* ==========================================
+/* =========================
    기본 설정
-========================================== */
+========================= */
 
 let menuData = [];
 
@@ -220,9 +240,9 @@ let currentLanguage = "KR";
 
 
 
-/* ==========================================
+/* =========================
    URL에서 점포ID 가져오기
-========================================== */
+========================= */
 
 const urlParams =
   new URLSearchParams(
@@ -235,22 +255,21 @@ const storeId =
 
 
 
-/* ==========================================
+/* =========================
    Apps Script 주소
-========================================== */
+========================= */
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbwtb2Bag4i1PRkq7NBiqmv-JXBOSv_6TiHqz8Wr-s4xhfo3IPPrSXIznl6BhK_VCD35/exec";
 
 
 
-/* ==========================================
+/* =========================
    JSONP callback
-========================================== */
+========================= */
 
 const callbackName =
   "menuCallback_" + Date.now();
-
 
 
 window[callbackName] = function(data) {
@@ -259,9 +278,9 @@ window[callbackName] = function(data) {
   console.log("받은 데이터:", data);
 
 
-  /* -------------------------------
-     매장명
-  ------------------------------- */
+  /* =====================
+     매장명 표시
+  ===================== */
 
   document
     .getElementById("storeName")
@@ -269,9 +288,9 @@ window[callbackName] = function(data) {
       data.storeName || "메뉴판";
 
 
-  /* -------------------------------
-     대표사진
-  ------------------------------- */
+  /* =====================
+     대표사진 표시
+  ===================== */
 
   const photo =
     document.getElementById("storePhoto");
@@ -304,9 +323,9 @@ window[callbackName] = function(data) {
   }
 
 
-  /* -------------------------------
-     메뉴
-  ------------------------------- */
+  /* =====================
+     메뉴 데이터
+  ===================== */
 
   menuData =
     data.menus || [];
@@ -323,9 +342,9 @@ window[callbackName] = function(data) {
 
 
 
-/* ==========================================
+/* =========================
    Apps Script 데이터 요청
-========================================== */
+========================= */
 
 const script =
   document.createElement("script");
@@ -354,9 +373,9 @@ document.body.appendChild(script);
 
 
 
-/* ==========================================
+/* =========================
    메뉴 표시
-========================================== */
+========================= */
 
 function renderMenu() {
 
@@ -384,8 +403,6 @@ function renderMenu() {
     let menuName = "";
 
 
-    /* 한국어 */
-
     if (
       currentLanguage === "KR"
     ) {
@@ -395,8 +412,6 @@ function renderMenu() {
 
     }
 
-
-    /* 영어 */
 
     if (
       currentLanguage === "EN"
@@ -408,8 +423,6 @@ function renderMenu() {
     }
 
 
-    /* 일본어 */
-
     if (
       currentLanguage === "JP"
     ) {
@@ -419,8 +432,6 @@ function renderMenu() {
 
     }
 
-
-    /* 중국어 */
 
     if (
       currentLanguage === "CN"
@@ -448,7 +459,6 @@ function renderMenu() {
 
       </div>
 
-
       <div class="price">
 
         ${Number(
@@ -468,9 +478,9 @@ function renderMenu() {
 
 
 
-/* ==========================================
+/* =========================
    언어 변경
-========================================== */
+========================= */
 
 function changeLanguage(
   language,
